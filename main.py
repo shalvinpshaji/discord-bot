@@ -1,12 +1,11 @@
 import os
 from discord.ext import commands
-from dotenv import load_dotenv
 import req
 
-load_dotenv()
+
 url = 'https://www.geeksforgeeks.org/fundamentals-of-algorithms/'
-TOKEN = os.getenv('DISCORD_TOKEN')
-GUILD = os.getenv('DISCORD_GUILD')
+TOKEN = os.environ.get('DISCORD_TOKEN')
+GUILD = os.environ.get('DISCORD_GUILD')
 r = req.GetContent()
 bot = commands.Bot(command_prefix='!')
 
