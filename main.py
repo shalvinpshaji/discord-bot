@@ -29,7 +29,7 @@ async def get(ctx, n1: int, n2: int):
     a_tags = ol.find_all('a')
     if n2 not in range(1, len(a_tags)):
         return
-    tag = a_tags[n2]
+    tag = a_tags[n2-1]
     message = r.get_final_message(tag.get('href'))
     parts = [message[i:i + 2000] for i in range(0, len(message), 2000)]
     for part in parts:
