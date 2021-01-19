@@ -1,0 +1,38 @@
+import os
+from discord.ext import commands
+from dotenv import load_dotenv
+import req
+
+load_dotenv()
+url = 'https://www.geeksforgeeks.org/fundamentals-of-algorithms/'
+TOKEN = os.getenv('DISCORD_TOKEN')
+GUILD = os.getenv('DISCORD_GUILD')
+r = req.GetContent()
+bot = commands.Bot(command_prefix='!')
+
+
+@bot.command(name='topics', help='Responds with all the main topics.')
+async def topics(ctx):
+    await ctx.send(r.list_string)
+
+
+@bot.command(name='subtopics', help='Respond with all the algorithms in given subtopic number.')
+async def sub(ctx, n: int):
+    message = r.get_individual_links(r.lists[n-1])
+    await ctx.send(message)
+
+
+@bot.command(name='get', help='Respond with the specified subtopic from specified topic')
+async def get(ctx, n1: int, n2: int):
+    if n1 not in range(1, len(r.links)):
+        return
+    ol = r.lists[n1 - 1]
+    a_tags = ol.find_all('a')
+    if n2 not in range(1, len(a_tags)):
+        return
+    tag = a_tags[n2]
+    message = r.get_final_message(tag.get('href'))
+    parts = [message[i:i + 2000] for i in range(0, len(message), 2000)]
+    for part in parts:
+        await ctx.send(part)
+bot.run(TOKEN)
