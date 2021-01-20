@@ -18,7 +18,13 @@ async def topics(ctx):
 @bot.command(name='subtopics', help='Responds with the list of algorithms under the selected subtopic number.')
 async def sub(ctx, n: int):
     message = r.get_individual_links(r.lists[n-1])
-    await ctx.send(message)
+    msg_part = []
+    if len(message) > 1999:
+        msg_part = [message[i: i + 2000] for i in range(0, len(message), 2000)]
+    else:
+        msg_part.append(message)
+    for msg in msg_part:
+        await ctx.send(msg)
 
 
 @bot.command(name='get', help='Responds with the selected subtopic from specified topic number')
