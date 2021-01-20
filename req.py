@@ -27,7 +27,6 @@ class GetContent:
     @staticmethod
     def get_individual_links(ol):
         a_tags = ol.find_all('a')
-        links = []
         message = ''
         for i, tag in enumerate(a_tags):
             message = message + f'{str(i+1)}. {tag.text} \n'
@@ -36,10 +35,30 @@ class GetContent:
 
     @staticmethod
     def get_final_message(link):
-        print(link)
-
         new_req = requests.get(link)
-        soup = BeautifulSoup(new_req.text,'html.parser')
-        return soup.find('article').text
-
-
+        soup = BeautifulSoup(new_req.text, 'html.parser')
+        code = soup.find_all('table')
+        python_code = ''
+        cpp_code = ''
+        for c in code:
+            if 'c++' in c.text.lower():
+                cpp_code = c.text
+                cpp_code = cpp_code.strip()
+            if 'python' in c.text.lower():
+                python_code = c.text
+                python_code = python_code.strip()
+        article = soup.find('article')
+        title = article.find(class_='title').text
+        title = '**' + title + '**'
+        p_tags = article.find_all(['p', 'strong'])
+        text = ''
+        if python_code:
+            code = python_code
+        else:
+            code = cpp_code
+        for tag in p_tags[:-2]:
+            t = tag.text.strip()
+            if ' ' in t:
+                text = text + t+'\n'
+        message = title + '\n' + text
+        return message, code

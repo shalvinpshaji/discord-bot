@@ -30,8 +30,18 @@ async def get(ctx, n1: int, n2: int):
     if n2 not in range(1, len(a_tags)):
         return
     tag = a_tags[n2-1]
-    message = r.get_final_message(tag.get('href'))
-    parts = [message[i:i + 2000] for i in range(0, len(message), 2000)]
+    message, code = r.get_final_message(tag.get('href'))
+    code = '**CODE**\n' + code
+    if len(message) > 1999:
+        parts = [message[i:i + 2000] for i in range(0, len(message), 2000)]
+    else:
+        parts = [message]
+    if len(code) > 1999:
+        code_part = [code[i:i+2000] for i in range(0, len(message), 2000)]
+    else:
+        code_part = [code]
     for part in parts:
+        await ctx.send(part)
+    for part in code_part:
         await ctx.send(part)
 bot.run(TOKEN)
