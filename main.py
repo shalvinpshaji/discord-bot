@@ -31,7 +31,8 @@ async def get(ctx, n1: int, n2: int):
         return
     tag = a_tags[n2-1]
     message, code = r.get_final_message(tag.get('href'))
-    code = '**CODE**\n' + code
+    if code:
+        code = '**CODE**\n' + code
     if len(message) > 1999:
         parts = [message[i:i + 2000] for i in range(0, len(message), 2000)]
     else:
